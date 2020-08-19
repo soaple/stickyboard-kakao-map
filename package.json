@@ -1,7 +1,7 @@
 {
     "name": "@stickyboard/kakao-map",
     "version": "0.1.0",
-    "description": "CardList component for StickyBoard",
+    "description": "Kakao map component for StickyBoard",
     "main": "dist/index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
