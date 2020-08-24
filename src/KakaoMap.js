@@ -40,7 +40,7 @@ class KakaoMap extends React.Component {
         }
     }
 
-    concatenateDetails = (details) => {
+    wrapDetails = (details) => {
         let result = [];
         for (let detail in details) {
             let temp = <Detail key={detail}>{detail} : {details[detail]}</Detail>;
@@ -50,20 +50,25 @@ class KakaoMap extends React.Component {
     }
 
     createCustomOverlay = (map, marker, data) => {
+        const { 
+            iwBackgroundColor,
+            iwFontColor,
+            iwFontSize
+         } = this.props;
+
         let content = <Content 
-                        iwBackgroundColor={this.props.iwBackgroundColor}
-                        iwFontColor={this.props.iwFontColor}
-                        iwFontSize={this.props.iwFontSize}
+                        iwBackgroundColor={iwBackgroundColor}
+                        iwFontColor={iwFontColor}
+                        iwFontSize={iwFontSize}
                         >
-                        {this.concatenateDetails(data.details)}
-                    </Content>;
+                        {this.wrapDetails(data.details)}
+                      </Content>;
 
         let customOverlay = new kakao.maps.CustomOverlay({
             content: renderToString(content),
             position: marker.getPosition(),
             xAnchor: 0.5,
-            yAnchor: 0,
-            overlay: false
+            yAnchor: 0
         });
 
         kakao.maps.event.addListener(
@@ -74,21 +79,30 @@ class KakaoMap extends React.Component {
     }
 
     mapScript = () => { 
+
+        const { 
+            appKey,
+            latitude,
+            longitude,
+            level,
+            dataList
+         } = this.props;
+
         const script = document.createElement("script");
         script.async = true;
-        script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${this.props.appKey}&autoload=false`;
+        script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${appKey}&autoload=false`;
         document.head.appendChild(script);
 
         script.onload = () => {
             kakao.maps.load(() => {
+
                 let container = document.getElementById("map");
                 let options = {
-                    center: new kakao.maps.LatLng(this.props.latitude, this.props.longitude),
-                    level: this.props.level ? this.props.level : 3
+                    center: new kakao.maps.LatLng(latitude, longitude),
+                    level: level ? level : 3
                 };
                 const map = new window.kakao.maps.Map(container, options);
-                
-                const { dataList } = this.props;
+
                 dataList.forEach((data) => {
                     const marker = new kakao.maps.Marker({
                         map: map,
@@ -96,6 +110,7 @@ class KakaoMap extends React.Component {
                     });
                     data.details ? this.createCustomOverlay(map, marker, data) : '';
                 });
+
             });
         };
     };
@@ -113,11 +128,17 @@ KakaoMap.propTypes = {
     level: PropTypes.number,
     longitude: PropTypes.number.isRequired,
     latitude: PropTypes.number.isRequired,
-    dataList: PropTypes.arrayOf(PropTypes.object).isRequired,
+    dataList: PropTypes.arrayOf(
+        PropTypes.shape({
+            latitude: PropTypes.number.isRequired,
+            longitude: PropTypes.number.isRequired,
+            details: PropTypes.object
+        })
+    ).isRequired,
     appKey: PropTypes.string.isRequired,
     iwBackgroundColor: PropTypes.string,
     iwFontColor: PropTypes.string,
     iwFontSize: PropTypes.string
-}; 
+};
 
 export default KakaoMap;
