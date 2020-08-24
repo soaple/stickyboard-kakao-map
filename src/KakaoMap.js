@@ -31,6 +31,10 @@ class KakaoMap extends React.Component {
         this.state = {};
     }
 
+    componentDidMount() {
+        this.mapScript();
+    }
+
     createMouseClickListener = (map, customOverlay) => {
         let overlay = false;
         const toggle = () => overlay = !overlay;        
@@ -79,7 +83,6 @@ class KakaoMap extends React.Component {
     }
 
     mapScript = () => { 
-
         const { 
             appKey,
             latitude,
@@ -95,7 +98,6 @@ class KakaoMap extends React.Component {
 
         script.onload = () => {
             kakao.maps.load(() => {
-
                 let container = document.getElementById("map");
                 let options = {
                     center: new kakao.maps.LatLng(latitude, longitude),
@@ -115,10 +117,6 @@ class KakaoMap extends React.Component {
         };
     };
       
-    componentDidMount() {
-        this.mapScript();
-    }
-
     render() {
         return <Root id="map"/>;
     }
