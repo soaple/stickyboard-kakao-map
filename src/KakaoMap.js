@@ -82,13 +82,21 @@ class KakaoMap extends React.Component {
         );
     }
 
+    createMarkerImg = (markerImgSrc, markerImgWidth, markerImgHeight) => {
+        const markerImgSize = new kakao.maps.Size(markerImgWidth, markerImgHeight);
+        return new kakao.maps.MarkerImage(markerImgSrc, markerImgSize);
+    }
+
     mapScript = () => { 
         const { 
             appKey,
             latitude,
             longitude,
             level,
-            dataList
+            dataList,
+            markerImgSrc,
+            markerImgWidth,
+            markerImgHeight
          } = this.props;
 
         const script = document.createElement("script");
@@ -108,11 +116,11 @@ class KakaoMap extends React.Component {
                 dataList.forEach((data) => {
                     const marker = new kakao.maps.Marker({
                         map: map,
-                        position: new kakao.maps.LatLng(data.latitude, data.longitude)
+                        position: new kakao.maps.LatLng(data.latitude, data.longitude),
+                        image: (markerImgSrc && markerImgWidth && markerImgHeight) ? this.createMarkerImg(markerImgSrc, markerImgWidth, markerImgHeight) : '';
                     });
                     data.details ? this.createCustomOverlay(map, marker, data) : '';
                 });
-
             });
         };
     };
@@ -136,7 +144,10 @@ KakaoMap.propTypes = {
     appKey: PropTypes.string.isRequired,
     iwBackgroundColor: PropTypes.string,
     iwFontColor: PropTypes.string,
-    iwFontSize: PropTypes.string
+    iwFontSize: PropTypes.string,
+    markerImgSrc: PropTypes.string,
+    markerImgWidth: PropTypes.number,
+    markerImgHeight: PropTypes.number
 };
 
 export default KakaoMap;
