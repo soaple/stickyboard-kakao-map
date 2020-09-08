@@ -5,23 +5,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { renderToString } from 'react-dom/server';
+import InfoWindow from './InfoWindow';
 
 const Root = styled.div`
     height:100%;
-`;
-
-const Content = styled.div`
-    padding:6px;
-    margin: 4px;
-    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
-    border-radius: 16px;
-    background-color: ${(props) => props.iwBackgroundColor || "#fff"};
-    color: ${(props) => props.iwFontColor || "#000"};
-    font-size: ${(props) => props.iwFontSize || "14px"};
-`;
-
-const Detail = styled.div`
-    padding: 2px;
 `;
 
 class KakaoMap extends React.Component {
@@ -44,29 +31,8 @@ class KakaoMap extends React.Component {
         }
     }
 
-    wrapDetails = (details) => {
-        let result = [];
-        for (let detail in details) {
-            let temp = <Detail key={detail}>{detail} : {details[detail]}</Detail>;
-            result.push(temp);
-        }
-        return result;
-    }
-
     createCustomOverlay = (map, marker, data) => {
-        const { 
-            iwBackgroundColor,
-            iwFontColor,
-            iwFontSize
-         } = this.props;
-
-        let content = <Content 
-                        iwBackgroundColor={iwBackgroundColor}
-                        iwFontColor={iwFontColor}
-                        iwFontSize={iwFontSize}
-                        >
-                        {this.wrapDetails(data.details)}
-                      </Content>;
+        let content = <InfoWindow details={data.details}/>
 
         let customOverlay = new kakao.maps.CustomOverlay({
             content: renderToString(content),
@@ -117,7 +83,7 @@ class KakaoMap extends React.Component {
                     const marker = new kakao.maps.Marker({
                         map: map,
                         position: new kakao.maps.LatLng(data.latitude, data.longitude),
-                        image: (markerImgSrc && markerImgWidth && markerImgHeight) ? this.createMarkerImg(markerImgSrc, markerImgWidth, markerImgHeight) : '';
+                        image: (markerImgSrc && markerImgWidth && markerImgHeight) ? this.createMarkerImg(markerImgSrc, markerImgWidth, markerImgHeight) : ''
                     });
                     data.details ? this.createCustomOverlay(map, marker, data) : '';
                 });
@@ -142,9 +108,6 @@ KakaoMap.propTypes = {
         })
     ).isRequired,
     appKey: PropTypes.string.isRequired,
-    iwBackgroundColor: PropTypes.string,
-    iwFontColor: PropTypes.string,
-    iwFontSize: PropTypes.string,
     markerImgSrc: PropTypes.string,
     markerImgWidth: PropTypes.number,
     markerImgHeight: PropTypes.number
