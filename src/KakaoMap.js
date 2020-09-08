@@ -32,8 +32,9 @@ class KakaoMap extends React.Component {
     }
 
     createCustomOverlay = (map, marker, data) => {
-        let content = <InfoWindow details={data.details}/>
-
+        let CustomIw = this.props.iwComponent;
+        let content = CustomIw ? <CustomIw details={data.details}/> : <InfoWindow details={data.details}/>;
+    
         let customOverlay = new kakao.maps.CustomOverlay({
             content: renderToString(content),
             position: marker.getPosition(),
@@ -110,7 +111,8 @@ KakaoMap.propTypes = {
     appKey: PropTypes.string.isRequired,
     markerImgSrc: PropTypes.string,
     markerImgWidth: PropTypes.number,
-    markerImgHeight: PropTypes.number
+    markerImgHeight: PropTypes.number,
+    iwComponent: PropTypes.func
 };
 
 export default KakaoMap;
