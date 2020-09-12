@@ -1,3 +1,4 @@
-import KakaoMap from './KakaoMap';
+import { KakaoMap } from './KakaoMap';
+import Marker from './Marker';
 
-export { KakaoMap };
+export { KakaoMap, Marker };
