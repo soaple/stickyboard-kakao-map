@@ -1,4 +1,3 @@
-
 # stickyboard-kakao-map
 Kakao map component for StickyBoard
 
@@ -23,21 +22,27 @@ $ npm run publish
 
 # Usage
 ### 1. props
-- level : zoom level
-- longtitude : central longtitude
-- latitude : central latitude
-- dataList : your data list
-- appKey : your kakao appkey
-- markerImgSrc : custom marker image source
-- markerImgWidth : custom marker image width
-- markerImgHeight : custom marker image height
-- iwComponent : custom infowindow component
+- KakaoMap
+  * level : zoom level
+  * longtitude : central longtitude
+  * latitude : central latitude
+  * appKey : your kakao appkey
+  * zoomable : zoomable option
+
+- Marker
+  * latitude : marker latitude
+  * longitude : marker longitude
+  * details : marker details
+  * markerImgSrc : custom marker image source
+  * markerImgWidth : custom marker image width
+  * markerImgHeight : custom marker image height
+  * iwComponent : custom infowindow component
 
 ### 2. Example of simple use
 - Data list with details
 ```javascript
 import React from 'react';
-import { KakaoMap } from '@stickyboard/kakao-map';
+import { KakaoMap, Marker } from '@stickyboard/kakao-map';
 
 const dataListWithDetails = [
   {
@@ -75,9 +80,16 @@ const App = () => {
       level={2}
       longitude={127.0776020771}
       latitude={37.2479733442}
-      dataList={dataListWithDetails}
       appKey='your_appKey'
-    />
+    >
+      {dataListWithDetails.map((data) => 
+        <Marker
+          latitude={data.latitude}
+          longitude={data.longitude}
+          details={data.details}
+        />
+      )}
+    </KakaoMap>
   );
 }
 
@@ -87,7 +99,7 @@ export default App;
 - Data list without details
 ```javascript
 import React from 'react';
-import { KakaoMap } from '@stickyboard/kakao-map';
+import { KakaoMap, Marker } from '@stickyboard/kakao-map';
 
 const dataListWithoutDetails = [
   {
@@ -110,9 +122,15 @@ const App = () => {
       level={2}
       longitude={127.0776020771}
       latitude={37.2479733442}
-      dataList={dataListWithoutDetails}
       appKey='your_appKey'
-    />
+    >
+      {dataListWithoutDetails.map((data) => 
+        <Marker
+          latitude={data.latitude}
+          longitude={data.longitude}
+        />
+      )}
+    </KakaoMap>
   );
 }
 
@@ -124,14 +142,7 @@ export default App;
 - Use markerImgSrc, markerImgWidth and markerImgHeight.
 ```javascript
 import React from 'react';
-import { KakaoMap } from '@stickyboard/kakao-map';
-
-const dataList = [
-  {
-    latitude: 37.54699,
-    longitude: 127.09598
-  }
-];
+import { KakaoMap, Marker } from '@stickyboard/kakao-map';
 
 const App = () => {
   return (
@@ -139,12 +150,16 @@ const App = () => {
       level={3}
       longitude={127.09598}
       latitude={37.54699}
-      dataList={dataList}
-      appKey='your_appKey''
-      markerImgSrc='https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png'
-      markerImgWidth={64}
-      markerImgHeight={69}
-    />
+      appKey='your_appKey'
+    >
+      <Marker
+        latitude={37.54699}
+        longitude={127.09598}
+        markerImgSrc='https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png'
+        markerImgWidth={64}
+        markerImgHeight={69}
+      />
+    </KakaoMap>
   );
 }
 
@@ -156,17 +171,7 @@ export default App;
 - Use iwComponent. Custom infowindow component should have "details" props.
 ```javascript
 import React from 'react';
-import { KakaoMap } from '@stickyboard/kakao-map';
-
-const dataList = [
-  {
-    latitude: 37.54699,
-    longitude: 127.09598,
-    details: {
-      title: '구의야구공원'
-    }
-  }
-];
+import { KakaoMap, Marker } from '@stickyboard/kakao-map';
 
 const CustomIW = ({details}) => {
   return (
@@ -184,13 +189,20 @@ const App = () => {
       level={3}
       longitude={127.09598}
       latitude={37.54699}
-      dataList={dataList}
       appKey='your_appKey'
-      markerImgSrc='https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png'
-      markerImgWidth={64}
-      markerImgHeight={69}
-      iwComponent={CustomIW}
-    />
+    >
+      <Marker
+        latitude={37.54699}
+        longitude={127.09598}
+        details={{
+          title: '구의야구공원'
+        }}
+        markerImgSrc='https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png'
+        markerImgWidth={64}
+        markerImgHeight={69}
+        iwComponent={CustomIW}
+      />
+    </KakaoMap>
   );
 }
 
