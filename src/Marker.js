@@ -36,9 +36,9 @@ class Marker extends React.Component {
                         )
                     : '',
         });
-        details
-            ? this.createCustomOverlay(this.context, marker, details)
-            : ''; 
+        if(details) {
+            this.createCustomOverlay(this.context, marker, details);
+        }
         marker.setMap(this.context);
     }
 
@@ -47,7 +47,7 @@ class Marker extends React.Component {
         const toggle = () => (overlay = !overlay);
         return () => {
             toggle();
-            overlay ? customOverlay.setMap(map) : customOverlay.setMap(null);
+            customOverlay.setMap(overlay ? map : null);
         };
     };
 

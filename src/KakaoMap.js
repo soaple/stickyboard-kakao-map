@@ -54,11 +54,11 @@ class KakaoMap extends React.Component {
         const { map } = this.state;
         return (
             <Root id="map">
-                {map ? (
+                {map && 
                 <MapContext.Provider value={map}>
                     {this.props.children}
                 </MapContext.Provider>
-                ) : null}
+                }
             </Root>
         );
     }
