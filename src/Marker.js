@@ -8,7 +8,7 @@ class Marker extends React.Component {
     static contextType = MapContext;
     constructor(props) {
         super(props);
-        
+
         this.state = {};
     }
 
@@ -19,24 +19,21 @@ class Marker extends React.Component {
             details,
             markerImgSrc,
             markerImgWidth,
-            markerImgHeight
+            markerImgHeight,
         } = this.props;
 
         const marker = new kakao.maps.Marker({
-            position: new kakao.maps.LatLng(
-                latitude,
-                longitude
-            ),
+            position: new kakao.maps.LatLng(latitude, longitude),
             image:
                 markerImgSrc && markerImgWidth && markerImgHeight
                     ? this.createMarkerImg(
-                            markerImgSrc,
-                            markerImgWidth,
-                            markerImgHeight
-                        )
+                          markerImgSrc,
+                          markerImgWidth,
+                          markerImgHeight
+                      )
                     : '',
         });
-        if(details) {
+        if (details) {
             this.createCustomOverlay(this.context, marker, details);
         }
         marker.setMap(this.context);

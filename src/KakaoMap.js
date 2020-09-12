@@ -17,19 +17,13 @@ class KakaoMap extends React.Component {
 
         this.state = {};
     }
-    
+
     componentDidMount() {
         this.mapScript();
     }
-    
+
     mapScript = () => {
-        const {
-            appKey,
-            latitude,
-            longitude,
-            level,
-            zoomable
-        } = this.props;
+        const { appKey, latitude, longitude, level, zoomable } = this.props;
 
         const script = document.createElement('script');
         script.async = true;
@@ -45,7 +39,7 @@ class KakaoMap extends React.Component {
                 };
                 let map = new window.kakao.maps.Map(container, options);
                 map.setZoomable(zoomable !== undefined ? zoomable : true);
-                this.setState({map});
+                this.setState({ map });
             });
         };
     };
@@ -54,11 +48,11 @@ class KakaoMap extends React.Component {
         const { map } = this.state;
         return (
             <Root id="map">
-                {map && 
-                <MapContext.Provider value={map}>
-                    {this.props.children}
-                </MapContext.Provider>
-                }
+                {map && (
+                    <MapContext.Provider value={map}>
+                        {this.props.children}
+                    </MapContext.Provider>
+                )}
             </Root>
         );
     }
