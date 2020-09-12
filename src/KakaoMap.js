@@ -4,12 +4,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { renderToString } from 'react-dom/server';
-import InfoWindow from './InfoWindow';
 
 const Root = styled.div`
     height: 100%;
 `;
+
+let MapContext = React.createContext(null);
 
 class KakaoMap extends React.Component {
     constructor(props) {
@@ -17,60 +17,18 @@ class KakaoMap extends React.Component {
 
         this.state = {};
     }
-
+    
     componentDidMount() {
         this.mapScript();
     }
-
-    createMouseClickListener = (map, customOverlay) => {
-        let overlay = false;
-        const toggle = () => (overlay = !overlay);
-        return () => {
-            toggle();
-            overlay ? customOverlay.setMap(map) : customOverlay.setMap(null);
-        };
-    };
-
-    createCustomOverlay = (map, marker, data) => {
-        let CustomIw = this.props.iwComponent;
-        let content = CustomIw ? (
-            <CustomIw details={data.details} />
-        ) : (
-            <InfoWindow details={data.details} />
-        );
-
-        let customOverlay = new kakao.maps.CustomOverlay({
-            content: renderToString(content),
-            position: marker.getPosition(),
-            xAnchor: 0.5,
-            yAnchor: 0,
-        });
-
-        kakao.maps.event.addListener(
-            marker,
-            'click',
-            this.createMouseClickListener(map, customOverlay)
-        );
-    };
-
-    createMarkerImg = (markerImgSrc, markerImgWidth, markerImgHeight) => {
-        const markerImgSize = new kakao.maps.Size(
-            markerImgWidth,
-            markerImgHeight
-        );
-        return new kakao.maps.MarkerImage(markerImgSrc, markerImgSize);
-    };
-
+    
     mapScript = () => {
         const {
             appKey,
             latitude,
             longitude,
             level,
-            dataList,
-            markerImgSrc,
-            markerImgWidth,
-            markerImgHeight,
+            zoomable
         } = this.props;
 
         const script = document.createElement('script');
@@ -85,34 +43,24 @@ class KakaoMap extends React.Component {
                     center: new kakao.maps.LatLng(latitude, longitude),
                     level: level ? level : 3,
                 };
-                const map = new window.kakao.maps.Map(container, options);
-
-                dataList.forEach((data) => {
-                    const marker = new kakao.maps.Marker({
-                        map: map,
-                        position: new kakao.maps.LatLng(
-                            data.latitude,
-                            data.longitude
-                        ),
-                        image:
-                            markerImgSrc && markerImgWidth && markerImgHeight
-                                ? this.createMarkerImg(
-                                      markerImgSrc,
-                                      markerImgWidth,
-                                      markerImgHeight
-                                  )
-                                : '',
-                    });
-                    data.details
-                        ? this.createCustomOverlay(map, marker, data)
-                        : '';
-                });
+                let map = new window.kakao.maps.Map(container, options);
+                map.setZoomable(zoomable !== undefined ? zoomable : true);
+                this.setState({map});
             });
         };
     };
 
     render() {
-        return <Root id="map" />;
+        const { map } = this.state;
+        return (
+            <Root id="map">
+                {map ? (
+                <MapContext.Provider value={map}>
+                    {this.props.children}
+                </MapContext.Provider>
+                ) : null}
+            </Root>
+        );
     }
 }
 
@@ -120,18 +68,8 @@ KakaoMap.propTypes = {
     level: PropTypes.number,
     longitude: PropTypes.number.isRequired,
     latitude: PropTypes.number.isRequired,
-    dataList: PropTypes.arrayOf(
-        PropTypes.shape({
-            latitude: PropTypes.number.isRequired,
-            longitude: PropTypes.number.isRequired,
-            details: PropTypes.object,
-        })
-    ).isRequired,
     appKey: PropTypes.string.isRequired,
-    markerImgSrc: PropTypes.string,
-    markerImgWidth: PropTypes.number,
-    markerImgHeight: PropTypes.number,
-    iwComponent: PropTypes.func,
+    zoomable: PropTypes.bool,
 };
 
-export default KakaoMap;
+export { KakaoMap, MapContext };
