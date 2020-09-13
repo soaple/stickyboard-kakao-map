@@ -9,7 +9,9 @@ class Marker extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {};
+        this.state = {
+            marker: {}
+        };
     }
 
     componentDidMount() {
@@ -37,6 +39,11 @@ class Marker extends React.Component {
             this.createCustomOverlay(this.context, marker, details);
         }
         marker.setMap(this.context);
+        this.setState({marker});
+    }
+
+    componentWillUnmount() {
+        this.state.marker.setMap(null);
     }
 
     createMouseClickListener = (map, customOverlay) => {
