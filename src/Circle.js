@@ -8,7 +8,7 @@ class Circle extends React.Component {
         super(props);
 
         this.state = {
-            circle: {}
+            circle: {},
         };
     }
 
@@ -22,21 +22,21 @@ class Circle extends React.Component {
             strokeOpacity,
             strokeStyle,
             fillColor,
-            fillOpacity
+            fillOpacity,
         } = this.props;
 
         const circle = new kakao.maps.Circle({
-            center : new kakao.maps.LatLng(latitude, longitude),
-            radius: radius, 
-            strokeWeight: strokeWeight, 
+            center: new kakao.maps.LatLng(latitude, longitude),
+            radius: radius,
+            strokeWeight: strokeWeight,
             strokeColor: strokeColor,
             strokeOpacity: strokeOpacity,
             strokeStyle: strokeStyle,
             fillColor: fillColor,
-            fillOpacity: fillOpacity   
-        }); 
+            fillOpacity: fillOpacity,
+        });
         circle.setMap(this.context);
-        this.setState({circle});
+        this.setState({ circle });
     }
 
     componentWillUnmount() {
@@ -57,7 +57,7 @@ Circle.propTypes = {
     strokeOpacity: PropTypes.number,
     strokeStyle: PropTypes.string,
     fillColor: PropTypes.string,
-    fillOpacity: PropTypes.number
+    fillOpacity: PropTypes.number,
 };
 
 export default Circle;
